@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Teacher — Aria</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{background:radial-gradient(1200px 600px at 20% -10%,#1e293b,#020617 60%);}
+  .glass{background:rgba(30,41,59,.6);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.15);}
+  .btn{transition:.15s;} .btn:hover{transform:translateY(-1px);}
+  .seg.active{border-color:#38bdf8;background:rgba(56,189,248,.12);}
+  .fade{animation:f .4s ease;} @keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .spin{width:18px;height:18px;border:3px solid #38bdf8;border-top-color:transparent;border-radius:50%;animation:s 1s linear infinite;display:inline-block}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body class="text-slate-100 min-h-screen">
+<div class="max-w-7xl mx-auto p-5">
+  <header class="flex items-center gap-3 mb-6">
+    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 grid place-items-center text-2xl">🎓</div>
+    <div>
+      <h1 class="text-2xl font-bold">AI Teacher <span class="text-sky-400">Aria</span></h1>
+      <p class="text-slate-400 text-sm">Adaptive, multilingual, video-based teaching — not a chatbot.</p>
+    </div>
+    <span id="health" class="ml-auto text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-400">checking…</span>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <!-- LEFT: setup + plan -->
+    <div class="space-y-5">
+      <section class="glass rounded-2xl p-5">
+        <h2 class="font-semibold mb-3">1 · Learning material <span class="text-slate-500 text-xs">(optional)</span></h2>
+        <label class="block border-2 border-dashed border-slate-600 rounded-xl p-4 text-center cursor-pointer hover:border-sky-400">
+          <input id="file" type="file" class="hidden" accept=".pdf,.docx,.doc,.pptx,.ppt,.txt,.md"/>
+          <span id="fileLabel" class="text-slate-400 text-sm">Drop a PDF / DOCX / PPTX / notes</span>
+        </label>
+        <p id="matInfo" class="text-xs text-emerald-400 mt-2"></p>
+      </section>
+
+      <section class="glass rounded-2xl p-5 space-y-3">
+        <h2 class="font-semibold">2 · Tell Aria how to teach</h2>
+        <textarea id="instruction" rows="3" class="w-full bg-slate-900/70 rounded-lg p-3 text-sm"
+          placeholder="e.g. I'm a beginner. Teach me Chapter 4 in 20 minutes in Hindi with simple examples. Ask me questions during the lesson."></textarea>
+        <div class="text-center text-xs text-slate-500">— or set it manually —</div>
+        <input id="topic" class="w-full bg-slate-900/70 rounded-lg p-2 text-sm" placeholder="Topic (e.g. Newton's Laws)"/>
+        <div class="grid grid-cols-2 gap-2">
+          <select id="level" class="bg-slate-900/70 rounded-lg p-2 text-sm">
+            <option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+          </select>
+          <input id="language" class="bg-slate-900/70 rounded-lg p-2 text-sm" value="English" placeholder="Language"/>
+          <input id="time" type="number" class="bg-slate-900/70 rounded-lg p-2 text-sm" value="20" placeholder="Minutes"/>
+          <input id="goal" class="bg-slate-900/70 rounded-lg p-2 text-sm" placeholder="Goal (optional)"/>
+        </div>
+        <button id="startBtn" class="btn w-full py-2.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold">Plan my lesson →</button>
+      </section>
+
+      <section id="planCard" class="glass rounded-2xl p-5 hidden">
+        <h2 class="font-semibold mb-1" id="planTopic"></h2>
+        <p class="text-xs text-slate-400 mb-3" id="planMeta"></p>
+        <div id="segs" class="space-y-2"></div>
+        <button id="videoBtn" class="btn w-full mt-4 py-2.5 rounded-lg bg-gradient-to-r from-fuchsia-500 to-pink-500 font-semibold">🎬 Generate full teaching video</button>
+      </section>
+    </div>
+
+    <!-- RIGHT: teaching stage -->
+    <div class="lg:col-span-2 space-y-5">
+      <section id="stage" class="glass rounded-2xl p-6 min-h-[320px] grid place-items-center text-center">
+        <div class="text-slate-500">
+          <div class="text-6xl mb-3">🧑‍🏫</div>
+          <p>Upload material or enter a topic, then press <b>Plan my lesson</b>.</p>
+          <p class="text-xs mt-2">Understand → Plan → Explain → Question → Evaluate → Adapt → Assess</p>
+        </div>
+      </section>
+
+      <section id="videoCard" class="glass rounded-2xl p-4 hidden">
+        <h3 class="font-semibold mb-2">🎬 AI Teaching Video</h3>
+        <video id="player" controls class="w-full rounded-xl"></video>
+      </section>
+
+      <section id="quizCard" class="glass rounded-2xl p-5 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-semibold">📝 Final Assessment</h3>
+          <button id="quizBtn" class="btn text-sm px-3 py-1.5 rounded-lg bg-slate-700">Start quiz</button>
+        </div>
+        <div id="quiz" class="space-y-3"></div>
+        <div id="report" class="hidden mt-4"></div>
+      </section>
+    </div>
+  </div>
+</div>
+<script src="/app/app.js"></script>
+</body>
+</html>
